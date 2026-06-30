@@ -1,0 +1,37 @@
+# Dependencias
+node_modules/
+frontend/node_modules/
+
+# Build / compilación
+backend/target/
+frontend/dist/
+*.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.local
+
+# IDE y editores
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Artefactos locales
+backend/build-status.txt
