@@ -1,21 +1,15 @@
 import React from 'react'
 import styles from './SensorCard.module.css'
-import { SENSORS, severity } from '../utils/constants'
-
-function formatVal(key, val) {
-  if (val === undefined || val === null || isNaN(val)) return '—'
-  if (key === 'lux' || key === 'eco2' || key === 'tvoc') return Math.round(val)
-  return Number(val).toFixed(1)
-}
+import { SENSORS, severity, formatSensorValue } from '../utils/constants'
 
 export default function SensorCard({ sensorKey, value }) {
   const sensor = SENSORS.find(s => s.key === sensorKey)
   if (!sensor) return null
 
-  const fmt = formatVal(sensorKey, value)
+  const fmt = formatSensorValue(sensorKey, value)
   
   // ✨ 1. LÓGICA DE CALIBRACIÓN: Detectar valores negativos en sensores estrictos
-  const sensoresEstrictos = ['eco2', 'tvoc', 'lux', 'humedad', 'ruido'];
+  const sensoresEstrictos = ['eco2', 'tvoc', 'lux', 'humedad', 'db'];
   const esNegativo = value !== undefined && value !== null && value < 0 && sensoresEstrictos.includes(sensorKey);
 
   // ✨ 2. EVALUACIÓN DE ESTADO: Calibración tiene prioridad sobre severity

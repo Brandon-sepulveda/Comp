@@ -99,17 +99,34 @@ export function getSensor(key) {
   return SENSORS.find(s => s.key === key)
 }
 
+/** Mismo redondeo que usa la UI — evita alertas falsas en los bordes del rango. */
+export function roundSensorValue(key, value) {
+  const n = Number(value)
+  if (value === null || value === undefined || Number.isNaN(n)) return null
+  if (key === 'lux' || key === 'eco2' || key === 'tvoc') return Math.round(n)
+  return Math.round(n * 10) / 10
+}
+
+export function formatSensorValue(key, value) {
+  const rounded = roundSensorValue(key, value)
+  if (rounded === null) return '—'
+  if (key === 'lux' || key === 'eco2' || key === 'tvoc') return String(rounded)
+  return rounded.toFixed(1)
+}
+
 export function isOutOfRange(key, value) {
   const s = getSensor(key)
-  if (!s || value === null || value === undefined || Number.isNaN(value)) return false
-  if (s.alertHighOnly) return value > s.max
-  return value < s.min || value > s.max
+  const v = roundSensorValue(key, value)
+  if (!s || v === null) return false
+  if (s.alertHighOnly) return v > s.max
+  return v < s.min || v > s.max
 }
 
 export function severity(key, value) {
   const s = getSensor(key)
-  if (!s || !isOutOfRange(key, value)) return 'ok'
-  if (key === 'eco2' && value > 1500) return 'critica'
-  if (key === 'db' && value > 60) return 'critica'
+  const v = roundSensorValue(key, value)
+  if (!s || v === null || !isOutOfRange(key, value)) return 'ok'
+  if (key === 'eco2' && v > 1500) return 'critica'
+  if (key === 'db' && v > 60) return 'critica'
   return 'advertencia'
 }
